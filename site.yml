@@ -1,0 +1,17 @@
+---
+#This playbook is to deploy Redhat Decision Manager 7.0 on a VM with ubuntu as its OS
+- hosts: brmsservers
+  remote_user: ubuntu
+  debugger: on_failed
+  roles: 
+    - role: system-setup
+    
+    - role: redis-setup-deb-ubuntu
+      become: yes
+      become_method: sudo
+      when: (ansible_facts['os_family'] == "Debian" or ansible_facts['os_family'] == "Ubuntu")
+    
+    - role: monitoring-redis
+      become: yes
+      become_method: sudo
+      when: (ansible_facts['os_family'] == "Debian" or ansible_facts['os_family'] == "Ubuntu")

@@ -1,0 +1,14 @@
+---
+- name: Check if redis-server is running
+  shell: pgrep -x "redis-server"
+  ignore_errors: yes
+  changed_when: false
+  register: service_redis_status
+
+- name: Report status of redis
+  fail:
+    msg: |
+      Service redis is not running.
+      Return code from pgrep:
+      {{ service_redis_status.rc }}
+  when: service_redis_status != 0

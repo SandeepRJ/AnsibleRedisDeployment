@@ -1,0 +1,23 @@
+---
+- name: "Setting ulimits"
+  shell: ulimit -Hs 10000
+
+- name: "Commands for bash_profile"
+  shell: |
+     echo 'unset HISTFILE
+     set +o history' >> ~/.bash_profile
+
+- name: "Executing bash profile"
+  shell: bash ~/.bash_profile
+
+- name: "Touch the /etc/sysctl.conf file, but add/remove some permissions"
+  file:
+     path: /etc/sysctl.conf
+     state: touch
+     mode: u+rw,g-wx,o-rwx
+  become: yes
+  become_method: sudo
+
+- name: "Set the max connection track to 3097152"
+  shell: echo 'net.netfilter.nf_conntrack_max = 3097152' | sudo tee -a /etc/sysctl.conf
+

@@ -1,0 +1,42 @@
+---
+- name: "Update apt repositories"
+  apt:
+    upgrade: dist
+    update_cache: yes
+
+- name: "Install curl"
+  apt: 
+      name: curl
+      state: latest
+      
+- name: "Install gcc make wget"
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - gcc
+    - make
+    - wget
+
+- name: "Install Redis server"
+  apt:
+    name: redis-server
+    state: latest
+
+- name: "Customize redis port number"
+  replace:
+    path: /etc/redis/redis.conf
+    regexp: 'port 6379'
+    replace: 'port 10000'
+
+- name: "Customize redis password"
+  replace:
+    path: /etc/redis/redis.conf
+    regexp: '# requirepass foobared'
+    replace: 'requirepass test123'
+
+- name: "Restart Redis server"
+  service:
+    name: redis-server
+    state: restarted
+  
